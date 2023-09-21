@@ -9,7 +9,7 @@ import com.pluralsight.springbootcrudwebapp.models.ManagerRequest;
 import com.pluralsight.springbootcrudwebapp.models.Project;
 import com.pluralsight.springbootcrudwebapp.repositories.EmployeeRepository;
 import com.pluralsight.springbootcrudwebapp.repositories.ProjectRepository;
-import com.pluralsight.springbootcrudwebapp.repositories.PromotionRepository;
+import com.pluralsight.springbootcrudwebapp.repositories.PositionRepository;
 import com.pluralsight.springbootcrudwebapp.services.EmployeeService;
 import com.pluralsight.springbootcrudwebapp.services.ManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,7 @@ public class EmployeeController {
     private EmployeeRepository employeeRepository;
 
     @Autowired
-    private PromotionRepository promotionRepository;
+    private PositionRepository promotionRepository;
 
     @Autowired
     private ProjectRepository projectRepository;
@@ -43,9 +45,12 @@ public class EmployeeController {
     private RestTemplate restTemplate;
 
     @Autowired
+    private WebClient webClient;
+
+    @Autowired
     private ManagerService managerService;
 
-    @GetMapping("/showEmployees")
+    @GetMapping
     public @ResponseBody
     List<Employee>
     getEmployees() {
@@ -53,13 +58,13 @@ public class EmployeeController {
         return employees;
     }
 
-    @GetMapping("/findEmployee/{id}")
+    @GetMapping("/{id}")
     public @ResponseBody Optional<Employee> findEmployeeById(@PathVariable Long id){
         Optional<Employee> employee= employeeRepository.findById(id);
         return employee;
     }
 
-    @PostMapping("/saveEmployee")
+    @PostMapping
     public ResponseEntity<String> saveEmployeeWithProject(@RequestBody Employee employee){
         Long empId=employee.getId();
         int trueCount=0;
@@ -91,11 +96,11 @@ public class EmployeeController {
         else {
             employeeRepository.save(employee);
         }
-        return ResponseEntity.ok("Employee added successfully    successfully");
+        return ResponseEntity.ok("Employee added successfully");
         //return ResponseEntity.ok("Projects created with title: " + employee.getProjects());
     }
 
-    @PutMapping("/updateEmployee/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<String> update(@PathVariable Long id, @RequestBody Employee updateEmployee){
         Optional<Employee> employeePresent= employeeRepository.findById(id);
 
@@ -113,11 +118,11 @@ public class EmployeeController {
         }
     }
 
-    @DeleteMapping("/deleteEmployee/{id}")
+    @DeleteMapping("/{id}")
     public String deleteEmployee(@PathVariable Long id){
         List<Project> projectsWithManagerId= projectRepository.findByManagerId(id);
         if(!projectsWithManagerId.isEmpty()){
-            return "There are projects that contain employee with Id "+id+" as manager, so first update project or delete those projects";
+            return "There are projects that contain employee with Id "+id+" as manager, update or delete those projects";
         }
         else {
             employeeRepository.deleteById(id);
@@ -151,36 +156,13 @@ public class EmployeeController {
     }
 
     @GetMapping("/getManager/{managerId}")
-    public ResponseEntity<ManagerRequest> getManager(@PathVariable Long managerId) {
-        // Make a GET request to retrieve manager information
-        /*ResponseEntity<ManagerRequest> managerResponse = restTemplate.getForEntity(
-                "http://localhost:8081/api/v1/managers/findManager/" + managerId, ManagerRequest.class);
-
-        // Extract the manager data from the response
-        ManagerRequest manager = managerResponse.getBody();
-
-        if (manager != null) {
-            return ResponseEntity.ok(manager);
-        } else {
-            return ResponseEntity.notFound().build();
-        }*/
-        ResponseEntity<List<ManagerRequest>> managerResponse = restTemplate.exchange(
-                "http://localhost:8083/api/v1/managers/findManager/" + managerId,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<ManagerRequest>>() {}
-        );
-
-        List<ManagerRequest> managers = managerResponse.getBody();
-
-        if (managers != null && !managers.isEmpty()) {
-            // Assuming you want the first element of the array
-            ManagerRequest manager = managers.get(0);
-            return ResponseEntity.ok(manager);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public Flux<ManagerRequest> getManager(@PathVariable Long managerId)
+    {
+        return webClient.get()
+                .uri("http://localhost:8083/api/v1/managers/" + managerId)
+                .retrieve().bodyToFlux(ManagerRequest.class);
     }
+
 
     @PostMapping("/save")
     public String saveEmployee(@RequestBody EmployeeDTO employeeDTO)

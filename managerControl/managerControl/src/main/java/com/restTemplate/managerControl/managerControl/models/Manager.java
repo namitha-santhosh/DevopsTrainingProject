@@ -9,10 +9,6 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "managers")
-/*@Setter
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor*/
 public class Manager {
 
     @Id

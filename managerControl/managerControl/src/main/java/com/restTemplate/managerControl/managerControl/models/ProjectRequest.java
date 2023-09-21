@@ -7,6 +7,12 @@ public class ProjectRequest {
 
     public ProjectRequest(){}
 
+    public ProjectRequest(Long id, String title, Long managerId) {
+        this.id = id;
+        this.title = title;
+        this.managerId = managerId;
+    }
+
     public Long getId() {
         return id;
     }

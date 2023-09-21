@@ -1,10 +1,13 @@
 package com.pluralsight.springbootcrudwebapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
-    @Entity
+import java.util.List;
+
+@Entity
     @Table(name = "promotion")
-    public class Promotion {
+    public class Position{
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,8 +21,28 @@ import jakarta.persistence.*;
 
         @Column(name = "email")
         private String email;
+        @Column(name = "position")
+        private String position;
 
-        public String getPosition() {
+        @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+        @JoinTable(name = "position_skill", joinColumns = {
+                @JoinColumn(name = "position_id", referencedColumnName = "id")
+        },
+                inverseJoinColumns = {
+                        @JoinColumn(name = "skill_id",referencedColumnName = "id")
+                }
+        )
+        private List<Skill> skills;
+
+    public List<Skill> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(List<Skill> skills) {
+        this.skills = skills;
+    }
+
+    public String getPosition() {
             return position;
         }
 
@@ -27,8 +50,6 @@ import jakarta.persistence.*;
             this.position = position;
         }
 
-        @Column(name = "position")
-        private String position;
         public long getId() {
             return id;
         }

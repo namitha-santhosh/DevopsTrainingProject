@@ -29,13 +29,6 @@ public class ManagerRequest {
         this.lastName = lastName;
     }
 
-    /*public ManagerRequest(Long id, Long managerId, String firstName, String lastName,String title) {
-        this.id = id;
-        this.managerId = managerId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }*/
-
     public Long getId() {
         return id;
     }
@@ -68,31 +61,5 @@ public class ManagerRequest {
         this.lastName = lastName;
     }
 
-    /*public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }*/
-/*private static final String GET_MANAGERS_ENDPOINT_URL = "http://localhost:8080/api/v1/managers/showManagers";
-    private static RestTemplate restTemplate = new RestTemplate();
-
-    public static void main(String[] args) {
-        ManagerRequest managerRequest=new ManagerRequest();
-        managerRequest.getManagers();
-    }
-
-    private void getManagers() {
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        HttpEntity< String > entity = new HttpEntity < String > ("parameters", headers);
-
-        ResponseEntity< String > result = restTemplate.exchange(GET_MANAGERS_ENDPOINT_URL, HttpMethod.GET, entity,
-                String.class);
-
-        System.out.println(result);
-    }*/
 
 }

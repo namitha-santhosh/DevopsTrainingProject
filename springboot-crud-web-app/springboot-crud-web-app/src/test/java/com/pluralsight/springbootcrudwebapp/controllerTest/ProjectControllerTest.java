@@ -51,44 +51,44 @@ public class ProjectControllerTest {
         assertEquals(2, result.size());
     }
 
-    @Test
-    public void testCreateProject() {
-        // Arrange
-        Project project = new Project();
-        project.setTitle("Test Project");
-        project.setManagerId(1L);
+//    @Test
+//    public void testCreateProject() {
+//        // Arrange
+//        Project project = new Project();
+//        project.setTitle("Test Project");
+//        project.setManagerId(1L);
+//
+//        Employee manager = new Employee();
+//        manager.setId(1L);
+//        manager.setFirstName("vishal");
+//        manager.setLastName("p");
+//        manager.setEmail("vishal@gmail.com");
+//
+//        when(employeeRepository.findById(1L)).thenReturn(Optional.of(manager));
+//        when(projectRepository.save(project)).thenReturn(project);
+//
+//        // Act
+//        ResponseEntity<String> response = projectController.create(project);
+//
+//        // Assert
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        assertEquals("Project created with title: Test Project", response.getBody());
+//    }
 
-        Employee manager = new Employee();
-        manager.setId(1L);
-        manager.setFirstName("vishal");
-        manager.setLastName("p");
-        manager.setEmail("vishal@gmail.com");
-
-        when(employeeRepository.findById(1L)).thenReturn(Optional.of(manager));
-        when(projectRepository.save(project)).thenReturn(project);
-
-        // Act
-        ResponseEntity<String> response = projectController.create(project);
-
-        // Assert
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Project created with title: Test Project", response.getBody());
-    }
-
-    @Test
-    public void testCreateProjectWithNonExistentManager() {
-        // Arrange
-        Project project = new Project();
-        project.setManagerId(2L); // Manager with ID 2 does not exist in the mock
-
-        when(employeeRepository.findById(2L)).thenReturn(Optional.empty());
-
-        // Act
-        ResponseEntity<String> response = projectController.create(project);
-
-        // Assert
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Manager with ID 2 does not exist.", response.getBody());
-    }
+//    @Test
+//    public void testCreateProjectWithNonExistentManager() {
+//        // Arrange
+//        Project project = new Project();
+//        project.setManagerId(2L); // Manager with ID 2 does not exist in the mock
+//
+//        when(employeeRepository.findById(2L)).thenReturn(Optional.empty());
+//
+//        // Act
+//        ResponseEntity<String> response = projectController.create(project);
+//
+//        // Assert
+//        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+//        assertEquals("Manager with ID 2 does not exist.", response.getBody());
+//    }
 }
 

@@ -55,25 +55,6 @@ public class ProjectController {
     public List<Project> listall(){return projectRepository.findAll();}
 
 
-    /*@PostMapping("/create")
-    public ResponseEntity<String> create(@RequestBody Project project){
-        Long mid=project.getManagerId();
-        Optional<Employee> manager = employeeRepository.findById(mid);
-        Employee emp= manager.get();
-        if (manager.isPresent()) {
-
-            //project.setEmployee(emp);
-            // Manager exists, save the project
-            Project savedProject=projectRepository.save(project);
-            return ResponseEntity.ok("Project created with title: " + savedProject.getTitle());
-        } else {
-            // Manager does not exist, return an error response
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Manager with ID " + mid + " does not exist.");
-        }
-
-    }*/
-
-
 
     @PutMapping("/updateProject/{id}")
     public ResponseEntity<String> update(@PathVariable Long id, @RequestBody Project updateProject){

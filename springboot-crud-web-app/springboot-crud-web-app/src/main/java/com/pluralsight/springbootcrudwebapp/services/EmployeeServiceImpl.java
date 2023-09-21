@@ -11,6 +11,7 @@ import com.pluralsight.springbootcrudwebapp.repositories.EmployeeRepo;
 import com.pluralsight.springbootcrudwebapp.repositories.EmployeeRepository;
 import com.pluralsight.springbootcrudwebapp.repositories.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

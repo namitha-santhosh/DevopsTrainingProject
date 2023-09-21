@@ -15,7 +15,7 @@ public class ManagerServiceImpl implements ManagerService{
     public ResponseEntity<ManagerRequest> createManager(Long managerId, String firstName, String lastName) {
         ManagerRequest managerRequest=new ManagerRequest(managerId,firstName,lastName);
         ResponseEntity<ManagerRequest> managerResponse = restTemplate.postForEntity(
-                "http://localhost:8083/api/v1/managers/saveManager", managerRequest, ManagerRequest.class);
+                "http://localhost:8083/api/v1/managers", managerRequest, ManagerRequest.class);
         ManagerRequest createdManager = managerResponse.getBody();
         return ResponseEntity.ok(createdManager);
     }

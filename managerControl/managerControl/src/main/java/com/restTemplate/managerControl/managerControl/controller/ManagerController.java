@@ -9,7 +9,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -21,19 +23,21 @@ public class ManagerController {
 
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private WebClient webClient;
 
-    @GetMapping("/showManagers")
+    @GetMapping
     public @ResponseBody List<Manager> getManagers(){
         List<Manager> managers=managerRepository.findAll();
         return managers;
     }
-    @GetMapping("/findManager/{managerId}")
+    @GetMapping("/{managerId}")
     public @ResponseBody List<Manager> findManagerById(@PathVariable Long managerId){
         List<Manager> manager= managerRepository.findByManagerId(managerId);
         System.out.println(manager);
         return manager;
     }
-    @PostMapping("/saveManager")
+    @PostMapping
     public Manager saveManager(@RequestBody Manager manager){
         List<Manager> manager1=managerRepository.findByManagerId(manager.getManagerId());
         if(manager1.isEmpty()){
@@ -43,26 +47,31 @@ public class ManagerController {
         return manager;
     }
 
-    @GetMapping("/showAllProjectsManagedBy/{id}")
-    public ResponseEntity<ProjectRequest> getProjects(@PathVariable Long managerId) {
-
-        ResponseEntity<List<ProjectRequest>> projectResponse = restTemplate.exchange(
-                "http://localhost:8081/api/v1/managers/findManager/" + managerId,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<ProjectRequest>>() {
-                }
-        );
-
-        List<ProjectRequest> projects = projectResponse.getBody();
-
-        if (projects != null && !projects.isEmpty()) {
-            // Assuming you want the first element of the array
-            ProjectRequest manager = projects.get(0);
-            return ResponseEntity.ok(manager);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/show/{managerId}")
+    public Flux<ProjectRequest> getManager(@PathVariable Long managerId)
+    {
+        return webClient.get()
+                .uri("http://localhost:8082/api/v1/projects/getProjectsByManagerId/" + managerId)
+                .retrieve().bodyToFlux(ProjectRequest.class);
     }
+//    public ResponseEntity<ProjectRequest> getProjects(@PathVariable Long managerId) {
+//
+//        ResponseEntity<List<ProjectRequest>> projectResponse = restTemplate.exchange(
+//                "http://localhost:8083/api/v1/managers/findManager/" + managerId,
+//                HttpMethod.GET,
+//                null,
+//                new ParameterizedTypeReference<List<ProjectRequest>>() {
+//                });
+//
+//        List<ProjectRequest> projects = projectResponse.getBody();
+//
+//        if (projects != null && !projects.isEmpty()) {
+//            // Assuming you want the first element of the array
+//            ProjectRequest manager = projects.get(0);
+//            return ResponseEntity.ok(manager);
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 
 }
