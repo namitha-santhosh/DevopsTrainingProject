@@ -26,5 +26,12 @@ pipeline {
                 }
             }
         }
+        stage('Upload to Nexus') {
+            steps {
+                dir('Employee-Project/employeeapp') {
+                    sh 'mvn deploy'
+                }
+            }
+        }
     }
 }
