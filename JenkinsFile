@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+    tools {
+        maven 'Maven 3.9.9'
+        jdk 'JDK17'
+    }
+    stages {
+        stage('Clone') {
+            steps {
+                git branch: 'main', url: 'https://github.com/namitha-santhosh/DevopsTrainingProject.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                dir('Employee-Project/employeeapp') {
+                    sh 'mvn clean install'
+                }
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                dir('Employee-Project/employeeapp') {
+                    withSonarQubeEnv('Sonar-server') {
+                        sh 'mvn sonar:sonar'
+                    }
+                }
+            }
+        }
+    }
+}
